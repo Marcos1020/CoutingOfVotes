@@ -24,7 +24,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping
+    @PostMapping("new/register")
     public ResponseEntity<?> registerNewSchedule(
             @Valid @RequestBody ScheduleRequest request)throws BadRequestException {
         ScheduleResponse response = this.scheduleService.newSchedule(request);
