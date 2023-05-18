@@ -46,4 +46,10 @@ public class ScheduleController {
         UpdateScheduleResponse response = this.scheduleService.updateSchedule(idSchedule, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @DeleteMapping("inactive/{id}")
+    public ResponseEntity<?>inactive(
+            @PathVariable ("id")final Long idSchedule) throws BadRequestException{
+        this.scheduleService.inactivaSchedule(idSchedule);
+        return ResponseEntity.status(HttpStatus.OK).body("Pauta em Stand-by");
+    }
 }

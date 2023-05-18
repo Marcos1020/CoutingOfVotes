@@ -5,11 +5,13 @@ import com.sanches.coutingOfVotes.controller.request.UpdateScheduleRequest;
 import com.sanches.coutingOfVotes.controller.response.ScheduleResponse;
 import com.sanches.coutingOfVotes.controller.response.UpdateScheduleResponse;
 import com.sanches.coutingOfVotes.convertions.ScheduleConvertions;
+import com.sanches.coutingOfVotes.entity.AssociateEntity;
 import com.sanches.coutingOfVotes.entity.ScheduleEntity;
 import com.sanches.coutingOfVotes.exception.BadRequestException;
 import com.sanches.coutingOfVotes.exception.ObjectAlreadyExists;
 import com.sanches.coutingOfVotes.repository.ScheduleRepository;
 import com.sanches.coutingOfVotes.statusenum.ScheduleStatus;
+import com.sanches.coutingOfVotes.statusenum.StatusAssociate;
 import com.sanches.coutingOfVotes.utils.ConverterUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,5 +77,22 @@ public class ScheduleService {
         convertions.updateConvertEntitySaveToResponse(entitySave, response);
 
         return response;
+    }
+    public void inactivaSchedule(final Long idSchedule)throws BadRequestException{
+
+        log.info("Pausando uma pauta");
+        Optional <ScheduleEntity> entitySchedule = this.scheduleRepository.findById(idSchedule);
+
+        if(!entitySchedule.isPresent()){
+            log.info("Idt não encontrado na base de dados");
+            throw new BadRequestException("Idt não encontrado na base de dados");
+
+        } else if (entitySchedule.get().getStatus().equals(ScheduleStatus.VOTED)){
+            log.info("Não foi possivel pausar a pauta, pois ela já consta como votada");
+            throw new BadRequestException("Não foi possivel pausar a pauta, pois ela já consta como votada");
+        }
+        entitySchedule.get().setStatus(ScheduleStatus.STAND_BY);
+        entitySchedule.get().setDateUpdate(ConverterUtil.nowTime());
+        this.scheduleRepository.save(entitySchedule.get());
     }
 }
