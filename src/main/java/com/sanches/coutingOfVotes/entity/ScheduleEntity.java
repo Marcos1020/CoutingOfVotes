@@ -2,7 +2,7 @@ package com.sanches.coutingOfVotes.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sanches.coutingOfVotes.status.ScheduleStatus;
+import com.sanches.coutingOfVotes.statusenum.ScheduleStatus;
 import com.sanches.coutingOfVotes.utils.ConverterUtil;
 import com.sanches.coutingOfVotes.utils.DateAndTimeDeserializer;
 import lombok.AllArgsConstructor;
@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Data
@@ -27,9 +28,11 @@ public class ScheduleEntity {
     private Long idSchedule;
 
     @Column(name = "SCHEDULE_NAME")
+    @NotEmpty(message = "Campo nome pauta não pode ser vazio")
     private String scheduleName;
 
     @Column(name = "DESCRIPTION")
+    @NotEmpty(message = "Campo descricao não pode ser vazio")
     private String description;
 
     @Column(name = "STATUS")
