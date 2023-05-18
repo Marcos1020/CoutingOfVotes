@@ -78,7 +78,7 @@ public class ScheduleService {
 
         return response;
     }
-    public void inactivaSchedule(final Long idSchedule)throws BadRequestException{
+    public void inactivatingSchedule(final Long idSchedule)throws BadRequestException{
 
         log.info("Pausando uma pauta");
         Optional <ScheduleEntity> entitySchedule = this.scheduleRepository.findById(idSchedule);
