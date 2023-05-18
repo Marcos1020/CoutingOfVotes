@@ -1,6 +1,6 @@
 package com.sanches.coutingOfVotes.controller.request;
 
-import com.sanches.coutingOfVotes.status.ScheduleStatus;
+import com.sanches.coutingOfVotes.statusenum.ScheduleStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

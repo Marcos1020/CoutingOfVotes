@@ -2,7 +2,7 @@ package com.sanches.coutingOfVotes.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sanches.coutingOfVotes.status.ScheduleStatus;
+import com.sanches.coutingOfVotes.statusenum.ScheduleStatus;
 import com.sanches.coutingOfVotes.utils.ConverterUtil;
 import com.sanches.coutingOfVotes.utils.DateAndTimeDeserializer;
 import lombok.AllArgsConstructor;
