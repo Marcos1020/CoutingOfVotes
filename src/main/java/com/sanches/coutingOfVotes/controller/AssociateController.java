@@ -46,4 +46,11 @@ public class AssociateController {
         UpdateAssociateResponse response = this.associateService.updateAssociate(idAssociate, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @DeleteMapping("inactive/{id}")
+    public ResponseEntity<?>inactive(
+         @PathVariable ("id")final Long idAssociate) throws BadRequestException{
+        this.associateService.inactivatingAssociated(idAssociate);
+        return ResponseEntity.status(HttpStatus.OK).body("Associado inativado com sucesso");
+    }
 }

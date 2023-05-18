@@ -9,6 +9,8 @@ import com.sanches.coutingOfVotes.entity.AssociateEntity;
 import com.sanches.coutingOfVotes.exception.BadRequestException;
 import com.sanches.coutingOfVotes.exception.ObjectAlreadyExists;
 import com.sanches.coutingOfVotes.repository.AssociateRepository;
+import com.sanches.coutingOfVotes.statusenum.StatusAssociate;
+import com.sanches.coutingOfVotes.utils.ConverterUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -69,5 +71,23 @@ public class AssociateService {
         convertions.updateConvertEntityToResponse(entitySave, response);
 
         return response;
+    }
+
+    public void inactivatingAssociated(final Long idAssociate)throws BadRequestException{
+
+        log.info("Inativando um associado");
+        Optional <AssociateEntity> entityAssociate = this.associateRepository.findById(idAssociate);
+
+        if(!entityAssociate.isPresent()){
+            log.info("Idt não encontrado na base de dados");
+            throw new BadRequestException("Idt não encontrado na base de dados");
+
+        } else if (entityAssociate.get().getStatusAssociate().equals(StatusAssociate.INACTIVE)) {
+            log.info("Usuario não pode ser inativado, pois já consta como inativo na base de dados");
+            throw new BadRequestException("Usuario não pode ser inativado, pois já consta como inativo na base de dados");
+        }
+        entityAssociate.get().setStatusAssociate(StatusAssociate.INACTIVE);
+        entityAssociate.get().setDateUpdate(ConverterUtil.nowTime());
+        this.associateRepository.save(entityAssociate.get());
     }
 }
