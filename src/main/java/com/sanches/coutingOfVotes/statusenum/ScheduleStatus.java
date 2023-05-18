@@ -3,5 +3,6 @@ package com.sanches.coutingOfVotes.statusenum;
 public enum ScheduleStatus {
 
     VOTED,
-    STILL_NOT_VOTED
+    STILL_NOT_VOTED,
+    STAND_BY
     }
