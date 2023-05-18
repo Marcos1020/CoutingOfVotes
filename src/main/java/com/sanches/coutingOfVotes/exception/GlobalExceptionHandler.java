@@ -36,4 +36,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBadRequestException(BadRequestException exception){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
+
+    @ExceptionHandler(ObjectAlreadyExists.class)
+    public ResponseEntity<String> handleObjectAlReadyExist(ObjectAlreadyExists exception){
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+    }
 }
