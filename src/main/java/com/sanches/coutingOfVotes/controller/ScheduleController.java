@@ -1,9 +1,12 @@
 package com.sanches.coutingOfVotes.controller;
 
 import com.sanches.coutingOfVotes.controller.request.ScheduleRequest;
+import com.sanches.coutingOfVotes.controller.request.UpdateScheduleRequest;
 import com.sanches.coutingOfVotes.controller.response.ScheduleResponse;
+import com.sanches.coutingOfVotes.controller.response.UpdateScheduleResponse;
 import com.sanches.coutingOfVotes.entity.ScheduleEntity;
 import com.sanches.coutingOfVotes.exception.BadRequestException;
+import com.sanches.coutingOfVotes.exception.ObjectAlreadyExists;
 import com.sanches.coutingOfVotes.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +29,7 @@ public class ScheduleController {
 
     @PostMapping("new/register")
     public ResponseEntity<?> registerNewSchedule(
-            @Valid @RequestBody ScheduleRequest request)throws BadRequestException {
+            @Valid @RequestBody ScheduleRequest request)throws ObjectAlreadyExists {
         ScheduleResponse response = this.scheduleService.newSchedule(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -34,5 +37,13 @@ public class ScheduleController {
     @GetMapping("list/all")
     public List<ScheduleEntity> getAllSchedules(){
         return scheduleService.listAllSchedules();
+    }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<?> update(
+            @PathVariable("id")final Long idSchedule,
+            @Valid @RequestBody UpdateScheduleRequest request)throws BadRequestException{
+        UpdateScheduleResponse response = this.scheduleService.updateSchedule(idSchedule, request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
