@@ -1,6 +1,11 @@
 server:
   port: ${PORT:9292}
 spring:
+  http:
+  encoding:
+    charset: UTF-8
+    enabled: true
+    force: true
   datasource:
     username: root
     url: jdbc:mysql://localhost:3346/mysql_image?useSSL=false&allowPublicKeyR etrieval=true
