@@ -1,13 +1,13 @@
 package com.sanches.coutingOfVotes.controller;
 
-import com.sanches.coutingOfVotes.controller.request.ScheduleRequest;
+import com.sanches.coutingOfVotes.controller.request.SubjectRequest;
 import com.sanches.coutingOfVotes.controller.request.UpdateScheduleRequest;
-import com.sanches.coutingOfVotes.controller.response.ScheduleResponse;
+import com.sanches.coutingOfVotes.controller.response.SubjectResponse;
 import com.sanches.coutingOfVotes.controller.response.UpdateScheduleResponse;
-import com.sanches.coutingOfVotes.entity.ScheduleEntity;
+import com.sanches.coutingOfVotes.entity.SubjectEntity;
 import com.sanches.coutingOfVotes.exception.BadRequestException;
 import com.sanches.coutingOfVotes.exception.ObjectAlreadyExists;
-import com.sanches.coutingOfVotes.service.ScheduleService;
+import com.sanches.coutingOfVotes.service.SubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +18,24 @@ import java.util.List;
 
 @RequestMapping("v1/api/schedule")
 @RestController
-public class ScheduleController {
+public class SubjectController {
 
-    private ScheduleService scheduleService;
+    private SubjectService scheduleService;
 
     @Autowired
-    public ScheduleController(ScheduleService scheduleService){
+    public SubjectController(SubjectService scheduleService){
         this.scheduleService = scheduleService;
     }
 
     @PostMapping("new/register")
     public ResponseEntity<?> registerNewSchedule(
-            @Valid @RequestBody ScheduleRequest request)throws ObjectAlreadyExists {
-        ScheduleResponse response = this.scheduleService.newSchedule(request);
+            @Valid @RequestBody SubjectRequest request)throws ObjectAlreadyExists {
+        SubjectResponse response = this.scheduleService.newSchedule(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("list/all")
-    public List<ScheduleEntity> getAllSchedules(){
+    public List<SubjectEntity> getAllSchedules(){
         return scheduleService.listAllSchedules();
     }
 
