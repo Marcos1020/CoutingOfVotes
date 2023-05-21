@@ -2,7 +2,7 @@ package com.sanches.coutingOfVotes.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.sanches.coutingOfVotes.statusenum.ScheduleStatus;
+import com.sanches.coutingOfVotes.statusenum.SubjectStatus;
 import com.sanches.coutingOfVotes.utils.ConverterUtil;
 import com.sanches.coutingOfVotes.utils.DateAndTimeDeserializer;
 import lombok.AllArgsConstructor;
@@ -16,15 +16,15 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ScheduleResponse {
+public class SubjectResponse {
 
     private Long idSchedule;
 
-    private String scheduleName;
+    private String subject;
 
     private String description;
 
-    private ScheduleStatus status;
+    private SubjectStatus status;
 
     @JsonDeserialize(using = DateAndTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = ConverterUtil.FORMATO_DATA)
