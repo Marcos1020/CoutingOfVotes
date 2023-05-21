@@ -1,6 +1,6 @@
 package com.sanches.coutingOfVotes.controller.request;
 
-import com.sanches.coutingOfVotes.statusenum.ScheduleStatus;
+import com.sanches.coutingOfVotes.statusenum.SubjectStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ScheduleRequest {
+public class SubjectRequest {
 
-    private String scheduleName;
+    private String subject;
 
     private String description;
 
-    private ScheduleStatus status;
+    private SubjectStatus status;
 }
