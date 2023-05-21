@@ -1,54 +1,95 @@
 package com.sanches.coutingOfVotes.service;
 
 import com.sanches.coutingOfVotes.controller.request.VotingAssociateRequest;
-import com.sanches.coutingOfVotes.controller.response.VotingAssociateResponse;
-import com.sanches.coutingOfVotes.entity.ScheduleEntity;
-import com.sanches.coutingOfVotes.entity.StartVotingEntity;
+import com.sanches.coutingOfVotes.controller.response.AssociateVotingResponse;
+import com.sanches.coutingOfVotes.entity.AssociateEntity;
+import com.sanches.coutingOfVotes.entity.NewSubjectVotingEntity;
+import com.sanches.coutingOfVotes.entity.AssociateVotingEntity;
 import com.sanches.coutingOfVotes.exception.BadRequestException;
-import com.sanches.coutingOfVotes.exception.NotFoundException;
-import com.sanches.coutingOfVotes.repository.ScheduleRepository;
-import com.sanches.coutingOfVotes.repository.StartSessionScheduleRepository;
-import com.sanches.coutingOfVotes.statusenum.StatusAssociate;
+import com.sanches.coutingOfVotes.repository.AssociateRepository;
+import com.sanches.coutingOfVotes.repository.NewSubjectVotingRepository;
+import com.sanches.coutingOfVotes.repository.AssociatevotingRepository;
+import com.sanches.coutingOfVotes.utils.ConverterUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @Slf4j
 public class VotingAssociateService {
 
-    private StartSessionScheduleRepository repository;
+    private AssociatevotingRepository repository;
 
-    private ScheduleRepository scheduleRepository;
+    private NewSubjectVotingRepository newSubjectVotingRepository;
+
+    private AssociateRepository associateRepository;
+
+    private CountingVotesService countingVotes;
 
     @Autowired
-    public VotingAssociateService(StartSessionScheduleRepository repository, ScheduleRepository scheduleRepository) {
+    public VotingAssociateService(AssociatevotingRepository repository, NewSubjectVotingRepository newSubjectVotingRepository, AssociateRepository associateRepository, CountingVotesService countingVotes) {
         this.repository = repository;
-        this.scheduleRepository = scheduleRepository;
+        this.newSubjectVotingRepository = newSubjectVotingRepository;
+        this.associateRepository = associateRepository;
+        this.countingVotes = countingVotes;
     }
 
-    public VotingAssociateResponse associateVoting(final Long idPauta, final Long idAssociate, VotingAssociateRequest request) throws BadRequestException, NotFoundException {
+    public AssociateVotingResponse associateVoting(final Long idAssociate, final Long idSection, VotingAssociateRequest request) throws BadRequestException {
 
-        Optional<StartVotingEntity> startVoting = this.repository.findById(idAssociate);
-        Optional<ScheduleEntity> scheduleEntity = this.scheduleRepository.findById(idPauta);
+        Optional<NewSubjectVotingEntity> sectionVoting = this.newSubjectVotingRepository.findById(idSection);
+        Optional<AssociateEntity> associateEntity = this.associateRepository.findById(idAssociate);
+        Optional<AssociateVotingEntity> votingEntity = this.repository.findById(associateEntity.get().getIdAssociate());
 
-        if (!scheduleEntity.isPresent()){
-            log.info("Idt da pauta não foi encontrado");
-            throw new BadRequestException("Idt da pauta não foi encontrado");
+        VrifyConditionsTheMethods(sectionVoting, associateEntity, votingEntity);
 
-        } else if (!startVoting.isPresent()) {
-            log.info("Idt de associado não foi encontrado na base de dados");
-            throw new BadRequestException("Idt de associado não foi encontrado na base de dados");
-
-        } else if (request.getCpf().equals(StatusAssociate.INACTIVE)) {
-            log.info("Associado está inativo, e não está apto a votação");
-            throw new NotFoundException("Associado está inativo, e não está apto a votação");
+        if (sectionVoting.get().getDateEnd().isAfter(LocalDateTime.now())) {
+            log.info("Votação encerrada");
+            throw new BadRequestException("Votação encerrada");
         }
 
-        startVoting.get().setAssociates(request.getIdAssociate());
+        AssociateVotingEntity startVotingEntity = new AssociateVotingEntity();
+        extractMetod(request, sectionVoting, associateEntity, startVotingEntity);
+        AssociateVotingEntity entitySave = this.repository.save(startVotingEntity);
 
-        return null;
+        AssociateVotingResponse response = AssociateVotingResponse.builder().build();
+        convertEntityVotingToResponseVoting(entitySave, response);
+        return response;
+    }
+
+    private static void VrifyConditionsTheMethods(Optional<NewSubjectVotingEntity> sectionVoting,
+                                                  Optional<AssociateEntity> associateEntity,
+                                                  Optional<AssociateVotingEntity> votingEntity) {
+
+        if (!sectionVoting.isPresent()) {
+            log.info("Pauta não encontra-se presente na base e dados");
+            throw new BadRequestException("Pauta não encontra-se presente na base e dados");
+
+        } else if (!associateEntity.isPresent()) {
+            log.info("error");
+            throw new BadRequestException("Error");
+
+        } else if (votingEntity.isPresent()) {
+            log.info("O associado portador do idt já votou na pauta em questão");
+            throw new BadRequestException("O associado portador do idt já votou na pauta em questão");
+        }
+    }
+
+    private static void extractMetod(VotingAssociateRequest request, Optional<NewSubjectVotingEntity> sectionEntity,
+                                     Optional<AssociateEntity> associateEntity,
+                                     AssociateVotingEntity startVotingEntity) {
+        startVotingEntity.setAssociates(associateEntity.get());
+        startVotingEntity.setSubject(sectionEntity.get());
+        startVotingEntity.setVote(request.getVote());
+        startVotingEntity.setDateRegisterOpenVotings(ConverterUtil.nowTime());
+    }
+
+    private static void convertEntityVotingToResponseVoting(AssociateVotingEntity entitySave, AssociateVotingResponse response) {
+        response.setIdAssociate(entitySave.getAssociates().getIdAssociate());
+        response.setIdSubject(entitySave.getSubject().getIdStartVoting());
+        response.setVote(entitySave.getVote());
+        response.setDateRegisterOpenVotings(entitySave.getDateRegisterOpenVotings());
     }
 }
