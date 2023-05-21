@@ -1,6 +1,6 @@
 package com.sanches.coutingOfVotes.statusenum;
 
-public enum ScheduleStatus {
+public enum SubjectStatus {
 
     VOTED,
     STILL_NOT_VOTED,
