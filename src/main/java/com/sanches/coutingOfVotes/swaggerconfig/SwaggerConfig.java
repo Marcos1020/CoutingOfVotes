@@ -24,7 +24,6 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("com.sanches.coutingOfVotes.controller"))
                 .paths(PathSelectors.any())
                 .build()
-                .tags(new Tag("teste", "Teste para vaga de dev Java"))
                 .apiInfo(apiInfo());
     }
 
